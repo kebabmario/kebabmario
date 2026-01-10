@@ -28,5 +28,5 @@
 </p>
 
 <p align="center">
-  <img src="https://www.deviantart.com/pixeljeff/art/Chill-Mario-818910244" width="400" alt="Mario Coding GIF" />
+  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExenVremthODhuaDYxNTR0ejhza3R6bzBhbHAycXYwaWtldGxpd3FodCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/kBxiC139CrroewH3Ft/giphy.gif" width="400" alt="Mario Coding GIF" />
 </p>
