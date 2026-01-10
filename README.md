@@ -23,7 +23,7 @@
 <p align="center">
   <strong>(@_myrixx):</strong><br>
   <a href="https://discord.com/users/1210792136094650399">
-    <img src="https://lanyard.cnrad.dev/api/1210792136094650399?theme=dark&bg=301934&animated=true&borderRadius=30px" />
+    <img src="https://lanyard.cnrad.dev/api/1210792136094650399?theme=dark&bg=301934&animated=true&animatedDecoration=true&borderRadius=42px" />
   </a>
 </p>
 
