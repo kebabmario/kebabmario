@@ -19,7 +19,7 @@ Welcome to my GitHub profile! I'm a passionate developer with experience in mult
 - Collaborating with other developers
 
 ## GitHub Stats
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=kebabmario&show_icons=true&theme=dark)
+[![kebabmario's GitHub stats](https://github-readme-stats.vercel.app/api?username=kebabmario&theme=dark)](https://github.com/kebabmario)
 
 ## Let's Connect
 Feel free to reach out if you'd like to collaborate or just say hello!
