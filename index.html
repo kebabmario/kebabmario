@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kebabmario — fullstack dev</title>
+  <link rel="icon" type="image/jpeg" href="assets/favicon.jpg" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="bg-blob blob1"></div>
+  <div class="bg-blob blob2"></div>
+  <div class="bg-blob blob3"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <img src="assets/favicon.jpg" alt="kebabmario" class="nav-avatar" />
+      <span>kebabmario</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#about">about</a></li>
+      <li><a href="#tech">tech</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="about" class="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-shapes">
+      <div class="shape shape1"></div>
+      <div class="shape shape2"></div>
+      <div class="shape shape3"></div>
+      <div class="shape shape4"></div>
+      <div class="shape shape5"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-avatar-wrap">
+        <div class="avatar-ring"></div>
+        <img src="assets/favicon.jpg" alt="kebabmario" class="hero-avatar" />
+      </div>
+      <div class="hero-text">
+        <div class="hero-greeting">hey there 👋</div>
+        <h1>i'm <span class="accent">kebabmario</span></h1>
+        <p class="hero-sub">fullstack web developer · minecraft plugin dev</p>
+        <p class="hero-desc">
+          i craft fast, modern web experiences and dabble in java minecraft
+          plugin development. always shipping, always learning.
+        </p>
+        <div class="hero-btns">
+          <a href="#projects" class="btn btn-primary">view projects</a>
+          <a href="#contact" class="btn btn-outline">contact me</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section id="tech" class="tech-section">
+    <h2 class="section-title">tech stack</h2>
+    <p class="section-sub">tools & technologies i work with</p>
+    <div class="tech-marquee-wrap">
+      <div class="tech-marquee">
+        <div class="tech-track" id="techTrack"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="projects-section">
+    <h2 class="section-title">projects</h2>
+    <p class="section-sub">things i've built</p>
+
+    <div class="projects-list">
+
+      <!-- TOASTER -->
+      <div class="project-row">
+        <div class="project-row-num">01</div>
+        <div class="project-row-logo">
+          <img src="assets/toaster.png" alt="toaster" />
+        </div>
+        <div class="project-row-info">
+          <div class="project-row-top">
+            <h3>toaster</h3>
+            <div class="project-row-tags">
+              <span class="tag">speed test</span>
+              <span class="tag">cloudflare</span>
+            </div>
+          </div>
+          <p>an internet speed test powered by cloudflare test endpoints. fast, accurate, and minimal.</p>
+        </div>
+        <div class="project-row-links">
+          <a href="https://usetoaster.app" target="_blank" class="proj-link proj-link-site">
+            usetoaster.app
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+          <a href="https://github.com/kebabmario/toaster" target="_blank" class="proj-link proj-link-gh">
+            <img src="https://cdn.simpleicons.org/github/ffffff" alt="github" />
+          </a>
+        </div>
+      </div>
+
+      <div class="project-divider"></div>
+
+      <!-- ATMOS -->
+      <div class="project-row">
+        <div class="project-row-num">02</div>
+        <div class="project-row-logo">
+          <img src="assets/atmos.png" alt="atmos" />
+        </div>
+        <div class="project-row-info">
+          <div class="project-row-top">
+            <h3>atmos</h3>
+            <div class="project-row-tags">
+              <span class="tag">weather</span>
+              <span class="tag">open-meteo</span>
+            </div>
+          </div>
+          <p>a clean weather website powered by the open-meteo api. accurate forecasts, beautiful ui.</p>
+        </div>
+        <div class="project-row-links">
+          <a href="https://useatmos.me" target="_blank" class="proj-link proj-link-site">
+            useatmos.me
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+          <a href="https://github.com/kebabmario/atmos" target="_blank" class="proj-link proj-link-gh">
+            <img src="https://cdn.simpleicons.org/github/ffffff" alt="github" />
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact-section">
+    <h2 class="section-title">contact</h2>
+    <p class="section-sub">let's build something together</p>
+
+    <div class="contact-wrapper">
+      <div class="contact-left">
+        <p class="contact-cta">got a project<br/>in mind?</p>
+        <p class="contact-cta-sub">i'm always open to new ideas, collabs, and cool stuff. drop me a message anytime.</p>
+      </div>
+      <div class="contact-right">
+        <a href="mailto:kebabmario@kebabmario.dev" class="cmethod">
+          <div class="cmethod-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <polyline points="2,4 12,13 22,4"/>
+            </svg>
+          </div>
+          <div class="cmethod-body">
+            <span class="cmethod-label">email</span>
+            <span class="cmethod-value">kebabmario@kebabmario.dev</span>
+          </div>
+          <div class="cmethod-arrow">↗</div>
+        </a>
+        <div class="cmethod cmethod-discord">
+          <div class="cmethod-icon discord-icon">
+            <img src="https://cdn.simpleicons.org/discord/ffffff" alt="discord" />
+          </div>
+          <div class="cmethod-body">
+            <span class="cmethod-label">discord</span>
+            <span class="cmethod-value">myrixx</span>
+          </div>
+          <div class="cmethod-arrow">
+            <span class="discord-badge offline" id="discordBadge">offline</span>
+          </div>
+        </div>
+        <div class="lanyard-wrap">
+          <img
+            src="https://lanyard.cnrad.dev/api/1210792136094650399?theme=dark&bg=0d1b2a&animated=true&hideDiscrim=true&borderRadius=12px&idleMessage=probably%20coding"
+            alt="Discord presence"
+            class="lanyard-img"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>made with ❤️ by <span class="accent">kebabmario</span> · 2026</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
