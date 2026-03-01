@@ -57,7 +57,6 @@ function pickActivityText(presence) {
   return text;
 }
 
-// ── Apply banner from dustin's API ──────────────────────────────
 function applyBanner(profile, status) {
   const bannerEl = document.getElementById("discordBanner");
   if (!bannerEl) return;
@@ -71,7 +70,6 @@ function applyBanner(profile, status) {
     return;
   }
 
-  // accent colour fallback
   const accent = profile?.banner_color ?? profile?.accent_color;
   const hex = accent
     ? (typeof accent === "number" ? "#" + accent.toString(16).padStart(6,"0") : accent)
@@ -83,7 +81,6 @@ function applyBanner(profile, status) {
     return;
   }
 
-  // status-tinted gradient fallback
   const sc = {
     online:  ["#23a55a","#1e7a42"],
     idle:    ["#f0b232","#b07d1a"],
@@ -95,12 +92,10 @@ function applyBanner(profile, status) {
   console.log("[Banner] gradient fallback — no banner or accent on this profile");
 }
 
-// ── Apply avatar decoration from dustin's API ───────────────────
 function applyDecoration(profile) {
   const decoEl = document.getElementById("discordDecoration");
   if (!decoEl) return;
 
-  // dustin returns avatar_decoration_data.asset
   const asset = profile?.avatar_decoration_data?.asset;
   if (asset) {
     const ext = asset.startsWith("a_") ? "gif" : "png";
@@ -108,7 +103,6 @@ function applyDecoration(profile) {
     decoEl.src = url;
     decoEl.style.display = "block";
     decoEl.onerror = () => {
-      // CDN blocked — fall back to locally hosted file
       decoEl.src = "assets/decoration.png";
       decoEl.onerror = () => { decoEl.style.display = "none"; };
     };
@@ -116,13 +110,11 @@ function applyDecoration(profile) {
     return;
   }
 
-  // no decoration returned — use local fallback
   decoEl.src = "assets/decoration.png";
   decoEl.style.display = "block";
   decoEl.onerror = () => { decoEl.style.display = "none"; };
 }
 
-// ── Apply profile effect from dustin's API ──────────────────────
 function applyProfileEffect(profile) {
   const effectEl = document.getElementById("discordEffect");
   if (!effectEl) return;
@@ -133,7 +125,6 @@ function applyProfileEffect(profile) {
     return;
   }
 
-  // dustin hosts the effect video/gif directly
   const url = `https://effects.discu.eu/effects/${effectId}/intro.webm`;
   effectEl.src = url;
   effectEl.style.display = "block";
@@ -142,9 +133,7 @@ function applyProfileEffect(profile) {
   console.log("[Effect]", url);
 }
 
-// ── Set all Discord UI from both APIs ───────────────────────────
 function setDiscordUI(lanyardData, dustinProfile) {
-  // Avatar — use dustin's data for hash, always pin to DISCORD_ID
   const avatarHash = dustinProfile?.avatar ?? "945ae26d4ccdb7349c26476664b901b1";
   const avatarExt  = avatarHash.startsWith("a_") ? "gif" : "png";
   const avatarUrl  = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatarHash}.${avatarExt}?size=128`;
@@ -157,13 +146,11 @@ function setDiscordUI(lanyardData, dustinProfile) {
   applyDecoration(dustinProfile);
   applyProfileEffect(dustinProfile);
 
-  // Name — always kebabmario
   const dnEl = document.getElementById("discordDisplayName");
-  if (dnEl) dnEl.textContent = dustinProfile?.global_name ?? "kebabmario";
+  if (dnEl) dnEl.textContent = dustinProfile?.global_name ?? "myrixx";
   const handleEl = document.getElementById("discordHandle");
-  if (handleEl) handleEl.textContent = `@${dustinProfile?.username ?? "kebabmario"}`;
+  if (handleEl) handleEl.textContent = `@${dustinProfile?.username ?? "myrixx"}`;
 
-  // Status dot + label
   const labels = { online:"online", idle:"idle", dnd:"do not disturb", offline:"offline" };
   const dot = document.getElementById("discordStatusDot");
   if (dot) dot.className = `discord-status-dot ${status}`;
@@ -173,7 +160,7 @@ function setDiscordUI(lanyardData, dustinProfile) {
     stText.textContent = labels[status] ?? status;
   }
 
-  // Custom status (type 4)
+
   const custom   = (lanyardData?.activities ?? []).find(a => a.type === 4);
   const customEl = document.getElementById("discordCustomStatus");
   if (customEl) {
@@ -181,7 +168,6 @@ function setDiscordUI(lanyardData, dustinProfile) {
     if (custom?.state) customEl.textContent = `${custom.emoji?.name ?? ""} ${custom.state}`.trim();
   }
 
-  // Real activity
   const actEl   = document.getElementById("discordActivity");
   const actWrap = document.getElementById("discordActivityWrap");
   const actText = pickActivityText(lanyardData);
@@ -189,7 +175,6 @@ function setDiscordUI(lanyardData, dustinProfile) {
   if (actEl)   actEl.innerHTML = actText ?? "";
 }
 
-// ── Fetch both APIs in parallel ─────────────────────────────────
 async function fetchAll() {
   const [lanyardRes, dustinRes] = await Promise.allSettled([
     fetch(LANYARD_API).then(r => r.json()),
