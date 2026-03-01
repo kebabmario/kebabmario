@@ -359,3 +359,11 @@ body {
 @media (max-width: 540px) {
   .char { display: none; }
 }
+
+body {
+  font-family: var(--font);
+  color: var(--txt);
+  background: #07070d;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
