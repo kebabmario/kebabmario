@@ -1,8 +1,9 @@
 const DISCORD_ID = "1210792136094650399";
-const DECORATION_URL = "https://cdn.discordapp.com/avatar-decoration-presets/a_3c97a2d37f433a7913a1c7b7a735d000.gif?size=160&passthrough=true";
 
-const CSS3_ICON  = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg";
-const CPP_ICON   = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg";
+const DECORATION_URL = "assets/decoration.png";
+
+const CSS3_ICON = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg";
+const CPP_ICON  = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg";
 
 const techCore = [
   { name: "JavaScript", icon: "https://cdn.simpleicons.org/javascript/F7DF1E" },
@@ -74,51 +75,55 @@ function applyBanner(user, status) {
   }
 
   const sc = { online:["#23a55a","#1e7a42"], idle:["#f0b232","#b07d1a"], dnd:["#f23f43","#a82b2e"], offline:["#5865F2","#3b4499"] };
-  const [c1,c2] = sc[status] ?? sc.offline;
+  const [c1, c2] = sc[status] ?? sc.offline;
   bannerEl.style.cssText = `background:linear-gradient(135deg,${c1}cc 0%,${c2}66 50%,#0b0d12 100%);`;
 }
 
 function setDiscordUI(p) {
   const user = p?.discord_user;
 
-  /* ── Avatar: MUST use DISCORD_ID, not whatever user object says ── */
+  // Avatar — always use DISCORD_ID in the URL
   const avatarHash = user?.avatar ?? "945ae26d4ccdb7349c26476664b901b1";
   const avatarExt  = avatarHash.startsWith("a_") ? "gif" : "png";
   const avatarUrl  = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatarHash}.${avatarExt}?size=128`;
-
-  const avatarEl = document.getElementById("discordAvatar");
+  const avatarEl   = document.getElementById("discordAvatar");
   if (avatarEl) avatarEl.src = avatarUrl;
 
-  /* ── Decoration ── */
+  // Decoration — .png, no passthrough
   const decoEl = document.getElementById("discordDecoration");
-  if (decoEl) { decoEl.src = DECORATION_URL; decoEl.style.display = "block"; }
+  if (decoEl) {
+    decoEl.src = DECORATION_URL;
+    decoEl.style.display = "block";
+    // hide if it still errors
+    decoEl.onerror = () => { decoEl.style.display = "none"; };
+  }
 
   const status = p?.discord_status ?? "offline";
   applyBanner(user, status);
 
-  /* ── Name / handle ── */
+  // Name / handle
   const username = user?.global_name || user?.username || "kebabmario";
   const dnEl = document.getElementById("discordDisplayName");
   if (dnEl) dnEl.textContent = username;
   const handleEl = document.getElementById("discordHandle");
   if (handleEl) handleEl.textContent = `@${user?.username ?? "kebabmario"}`;
 
-  /* ── Status ── */
+  // Status label
   const labels = { online:"online", idle:"idle", dnd:"do not disturb", offline:"offline" };
   const dot = document.getElementById("discordStatusDot");
   if (dot) dot.className = `discord-status-dot ${status}`;
   const stText = document.getElementById("discordStatusText");
   if (stText) { stText.className = `discord-status-label ${status}`; stText.textContent = labels[status] ?? status; }
 
-  /* ── Custom status (type 4) ── */
-  const custom = (p?.activities ?? []).find(a => a.type === 4);
+  // Custom status (type 4)
+  const custom  = (p?.activities ?? []).find(a => a.type === 4);
   const customEl = document.getElementById("discordCustomStatus");
   if (customEl) {
     customEl.style.display = custom?.state ? "block" : "none";
     if (custom?.state) customEl.textContent = `${custom.emoji?.name ?? ""} ${custom.state}`.trim();
   }
 
-  /* ── Real activity ── */
+  // Real activity
   const actEl   = document.getElementById("discordActivity");
   const actWrap = document.getElementById("discordActivityWrap");
   const actText = pickActivityText(p);
