@@ -1,5 +1,4 @@
 const DISCORD_ID = "1210792136094650399";
-
 const DECORATION_URL = "assets/decoration.png";
 
 const CSS3_ICON = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg";
@@ -74,7 +73,12 @@ function applyBanner(user, status) {
     return;
   }
 
-  const sc = { online:["#23a55a","#1e7a42"], idle:["#f0b232","#b07d1a"], dnd:["#f23f43","#a82b2e"], offline:["#5865F2","#3b4499"] };
+  const sc = {
+    online:  ["#23a55a","#1e7a42"],
+    idle:    ["#f0b232","#b07d1a"],
+    dnd:     ["#f23f43","#a82b2e"],
+    offline: ["#5865F2","#3b4499"],
+  };
   const [c1, c2] = sc[status] ?? sc.offline;
   bannerEl.style.cssText = `background:linear-gradient(135deg,${c1}cc 0%,${c2}66 50%,#0b0d12 100%);`;
 }
@@ -82,48 +86,48 @@ function applyBanner(user, status) {
 function setDiscordUI(p) {
   const user = p?.discord_user;
 
-  // Avatar — always use DISCORD_ID in the URL
-  const avatarHash = user?.avatar ?? "945ae26d4ccdb7349c26476664b901b1";
-  const avatarExt  = avatarHash.startsWith("a_") ? "gif" : "png";
-  const avatarUrl  = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatarHash}.${avatarExt}?size=128`;
+  // Avatar — hardcoded hash so it never shows someone else's avatar
+  const avatarHash = "945ae26d4ccdb7349c26476664b901b1";
+  const avatarUrl  = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatarHash}.png?size=128`;
   const avatarEl   = document.getElementById("discordAvatar");
   if (avatarEl) avatarEl.src = avatarUrl;
 
-  // Decoration — .png, no passthrough
+  // Decoration
   const decoEl = document.getElementById("discordDecoration");
   if (decoEl) {
     decoEl.src = DECORATION_URL;
     decoEl.style.display = "block";
-    // hide if it still errors
     decoEl.onerror = () => { decoEl.style.display = "none"; };
   }
 
   const status = p?.discord_status ?? "offline";
   applyBanner(user, status);
 
-  // Name / handle
-  const username = user?.global_name || user?.username || "kebabmario";
+  // Name — hardcoded so it never shows someone else's name
   const dnEl = document.getElementById("discordDisplayName");
-  if (dnEl) dnEl.textContent = username;
+  if (dnEl) dnEl.textContent = "kebabmario";
   const handleEl = document.getElementById("discordHandle");
-  if (handleEl) handleEl.textContent = `@${user?.username ?? "kebabmario"}`;
+  if (handleEl) handleEl.textContent = "@kebabmario";
 
-  // Status label
+  // Status dot + label
   const labels = { online:"online", idle:"idle", dnd:"do not disturb", offline:"offline" };
   const dot = document.getElementById("discordStatusDot");
   if (dot) dot.className = `discord-status-dot ${status}`;
   const stText = document.getElementById("discordStatusText");
-  if (stText) { stText.className = `discord-status-label ${status}`; stText.textContent = labels[status] ?? status; }
+  if (stText) {
+    stText.className = `discord-status-label ${status}`;
+    stText.textContent = labels[status] ?? status;
+  }
 
-  // Custom status (type 4)
-  const custom  = (p?.activities ?? []).find(a => a.type === 4);
+  // Custom status (type 4) — shown as italic line under handle
+  const custom   = (p?.activities ?? []).find(a => a.type === 4);
   const customEl = document.getElementById("discordCustomStatus");
   if (customEl) {
     customEl.style.display = custom?.state ? "block" : "none";
     if (custom?.state) customEl.textContent = `${custom.emoji?.name ?? ""} ${custom.state}`.trim();
   }
 
-  // Real activity
+  // Real activity (no type 4)
   const actEl   = document.getElementById("discordActivity");
   const actWrap = document.getElementById("discordActivityWrap");
   const actText = pickActivityText(p);
