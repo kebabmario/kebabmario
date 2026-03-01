@@ -1,5 +1,6 @@
-const DISCORD_ID = "1210792136094650399";
-const DECORATION_URL = "assets/decoration.png";
+const DISCORD_ID     = "1210792136094650399";
+const DUSTIN_API     = `https://dcdn.dstn.to/profile/${DISCORD_ID}`;
+const LANYARD_API    = `https://api.lanyard.rest/v1/users/${DISCORD_ID}`;
 
 const CSS3_ICON = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg";
 const CPP_ICON  = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg";
@@ -56,23 +57,33 @@ function pickActivityText(presence) {
   return text;
 }
 
-function applyBanner(user, status) {
+// ── Apply banner from dustin's API ──────────────────────────────
+function applyBanner(profile, status) {
   const bannerEl = document.getElementById("discordBanner");
   if (!bannerEl) return;
 
-  const bannerHash = user?.banner;
+  const bannerHash = profile?.banner;
   if (bannerHash) {
     const ext = bannerHash.startsWith("a_") ? "gif" : "png";
-    bannerEl.style.cssText = `background-image:url("https://cdn.discordapp.com/banners/${DISCORD_ID}/${bannerHash}.${ext}?size=600");background-size:cover;background-position:center top;`;
+    const url = `https://cdn.discordapp.com/banners/${DISCORD_ID}/${bannerHash}.${ext}?size=600`;
+    bannerEl.style.cssText = `background-image:url("${url}");background-size:cover;background-position:center top;`;
+    console.log("[Banner] image:", url);
     return;
   }
 
-  const accent = user?.banner_color;
-  if (accent) {
-    bannerEl.style.cssText = `background:linear-gradient(135deg,${accent}ee 0%,${accent}44 60%,#0b0d12 100%);`;
+  // accent colour fallback
+  const accent = profile?.banner_color ?? profile?.accent_color;
+  const hex = accent
+    ? (typeof accent === "number" ? "#" + accent.toString(16).padStart(6,"0") : accent)
+    : null;
+
+  if (hex) {
+    bannerEl.style.cssText = `background:linear-gradient(135deg,${hex}ee 0%,${hex}44 60%,#0b0d12 100%);`;
+    console.log("[Banner] accent colour:", hex);
     return;
   }
 
+  // status-tinted gradient fallback
   const sc = {
     online:  ["#23a55a","#1e7a42"],
     idle:    ["#f0b232","#b07d1a"],
@@ -81,33 +92,76 @@ function applyBanner(user, status) {
   };
   const [c1, c2] = sc[status] ?? sc.offline;
   bannerEl.style.cssText = `background:linear-gradient(135deg,${c1}cc 0%,${c2}66 50%,#0b0d12 100%);`;
+  console.log("[Banner] gradient fallback — no banner or accent on this profile");
 }
 
-function setDiscordUI(p) {
-  const user = p?.discord_user;
+// ── Apply avatar decoration from dustin's API ───────────────────
+function applyDecoration(profile) {
+  const decoEl = document.getElementById("discordDecoration");
+  if (!decoEl) return;
 
-  // Avatar — hardcoded hash so it never shows someone else's avatar
-  const avatarHash = "945ae26d4ccdb7349c26476664b901b1";
-  const avatarUrl  = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatarHash}.png?size=128`;
+  // dustin returns avatar_decoration_data.asset
+  const asset = profile?.avatar_decoration_data?.asset;
+  if (asset) {
+    const ext = asset.startsWith("a_") ? "gif" : "png";
+    const url = `https://cdn.discordapp.com/avatar-decoration-presets/${asset}.${ext}?size=160&passthrough=true`;
+    decoEl.src = url;
+    decoEl.style.display = "block";
+    decoEl.onerror = () => {
+      // CDN blocked — fall back to locally hosted file
+      decoEl.src = "assets/decoration.png";
+      decoEl.onerror = () => { decoEl.style.display = "none"; };
+    };
+    console.log("[Decoration] asset:", url);
+    return;
+  }
+
+  // no decoration returned — use local fallback
+  decoEl.src = "assets/decoration.png";
+  decoEl.style.display = "block";
+  decoEl.onerror = () => { decoEl.style.display = "none"; };
+}
+
+// ── Apply profile effect from dustin's API ──────────────────────
+function applyProfileEffect(profile) {
+  const effectEl = document.getElementById("discordEffect");
+  if (!effectEl) return;
+
+  const effectId = profile?.profile_effect?.id ?? profile?.profile_effect_config?.id;
+  if (!effectId) {
+    effectEl.style.display = "none";
+    return;
+  }
+
+  // dustin hosts the effect video/gif directly
+  const url = `https://effects.discu.eu/effects/${effectId}/intro.webm`;
+  effectEl.src = url;
+  effectEl.style.display = "block";
+  effectEl.load();
+  effectEl.play().catch(() => {});
+  console.log("[Effect]", url);
+}
+
+// ── Set all Discord UI from both APIs ───────────────────────────
+function setDiscordUI(lanyardData, dustinProfile) {
+  // Avatar — use dustin's data for hash, always pin to DISCORD_ID
+  const avatarHash = dustinProfile?.avatar ?? "945ae26d4ccdb7349c26476664b901b1";
+  const avatarExt  = avatarHash.startsWith("a_") ? "gif" : "png";
+  const avatarUrl  = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatarHash}.${avatarExt}?size=128`;
   const avatarEl   = document.getElementById("discordAvatar");
   if (avatarEl) avatarEl.src = avatarUrl;
 
-  // Decoration
-  const decoEl = document.getElementById("discordDecoration");
-  if (decoEl) {
-    decoEl.src = DECORATION_URL;
-    decoEl.style.display = "block";
-    decoEl.onerror = () => { decoEl.style.display = "none"; };
-  }
+  const status = lanyardData?.discord_status ?? "offline";
 
-  const status = p?.discord_status ?? "offline";
-  applyBanner(user, status);
+  applyBanner(dustinProfile, status);
+  applyDecoration(dustinProfile);
+  applyProfileEffect(dustinProfile);
 
-  // Name — hardcoded so it never shows someone else's name
+  // Name — always kebabmario
   const dnEl = document.getElementById("discordDisplayName");
-  if (dnEl) dnEl.textContent = "kebabmario";
+  if (dnEl) dnEl.textContent = dustinProfile?.global_name ?? "kebabmario";
   const handleEl = document.getElementById("discordHandle");
-  if (handleEl) handleEl.textContent = "@kebabmario";
+  if (handleEl) handleEl.textContent = `@${dustinProfile?.username ?? "kebabmario"}`;
 
   // Status dot + label
   const labels = { online:"online", idle:"idle", dnd:"do not disturb", offline:"offline" };
@@ -119,37 +173,46 @@ function setDiscordUI(p) {
     stText.textContent = labels[status] ?? status;
   }
 
-  // Custom status (type 4) — shown as italic line under handle
-  const custom   = (p?.activities ?? []).find(a => a.type === 4);
+  // Custom status (type 4)
+  const custom   = (lanyardData?.activities ?? []).find(a => a.type === 4);
   const customEl = document.getElementById("discordCustomStatus");
   if (customEl) {
     customEl.style.display = custom?.state ? "block" : "none";
     if (custom?.state) customEl.textContent = `${custom.emoji?.name ?? ""} ${custom.state}`.trim();
   }
 
-  // Real activity (no type 4)
+  // Real activity
   const actEl   = document.getElementById("discordActivity");
   const actWrap = document.getElementById("discordActivityWrap");
-  const actText = pickActivityText(p);
+  const actText = pickActivityText(lanyardData);
   if (actWrap) actWrap.style.display = actText ? "block" : "none";
   if (actEl)   actEl.innerHTML = actText ?? "";
 }
 
-async function fetchPresence() {
-  try {
-    const res  = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
-    const json = await res.json();
-    if (!json?.success) throw new Error("lanyard failed");
-    setDiscordUI(json.data);
-  } catch(e) {
-    console.error("[Lanyard]", e);
-    setDiscordUI(null);
-  }
+// ── Fetch both APIs in parallel ─────────────────────────────────
+async function fetchAll() {
+  const [lanyardRes, dustinRes] = await Promise.allSettled([
+    fetch(LANYARD_API).then(r => r.json()),
+    fetch(DUSTIN_API).then(r => r.json()),
+  ]);
+
+  const lanyardData  = lanyardRes.status === "fulfilled" && lanyardRes.value?.success
+    ? lanyardRes.value.data
+    : null;
+
+  const dustinProfile = dustinRes.status === "fulfilled"
+    ? dustinRes.value
+    : null;
+
+  console.log("[Dustin]", dustinProfile);
+  console.log("[Lanyard]", lanyardData);
+
+  setDiscordUI(lanyardData, dustinProfile);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   renderTech("techCore", techCore);
   renderTech("techTools", techTools);
-  fetchPresence();
-  setInterval(fetchPresence, 20_000);
+  fetchAll();
+  setInterval(fetchAll, 20_000);
 });
