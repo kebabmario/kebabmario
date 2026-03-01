@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kebabmario</title>
   <link rel="icon" type="image/jpeg" href="assets/favicon.jpg" />
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
@@ -19,7 +19,7 @@
       <img class="topbar-avatar" src="assets/favicon.jpg" alt="kebabmario" />
       <div class="topbar-title">
         <div class="name">kebabmario</div>
-        <div class="tagline">fullstack web dev & minecraft plugin dev</div>
+        <div class="tagline">fullstack web dev · minecraft plugin dev</div>
       </div>
     </div>
     <div class="topbar-right">
@@ -41,11 +41,12 @@
     <section class="panel panel-discord">
       <div class="discord-card">
 
-        <!-- Banner: filled by JS (image, color, or gradient) -->
         <div class="discord-banner" id="discordBanner">
-          <!-- Avatar overlaps banner bottom edge -->
+          <!-- Avatar + decoration overlay -->
           <div class="discord-avatar-wrap">
             <img id="discordAvatar" class="discord-avatar" src="assets/favicon.jpg" alt="avatar" />
+            <!-- decoration sits on top of avatar, same size, absolutely positioned -->
+            <img id="discordDecoration" class="discord-decoration" src="" alt="" style="display:none" />
             <span id="discordStatusDot" class="discord-status-dot offline"></span>
           </div>
         </div>
@@ -56,10 +57,7 @@
             <span id="discordStatusText" class="discord-status-label offline">offline</span>
           </div>
           <div id="discordHandle" class="discord-handle">@kebabmario</div>
-          <!-- Custom status (type 4) -->
           <div id="discordCustomStatus" class="discord-custom-status" style="display:none"></div>
-
-          <!-- Real activity (type 0-3, or Spotify) -->
           <div id="discordActivityWrap" class="discord-activity-block" style="display:none">
             <div class="discord-activity-title">Activity</div>
             <div id="discordActivity" class="discord-activity"></div>
