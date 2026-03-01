@@ -81,7 +81,7 @@ body{font-family:var(--font);color:var(--txt);background:var(--bg);min-height:10
 /* Decoration — bigger than avatar, centered over it, no border-radius */
 .discord-decoration{
   position:absolute;
-  width:108px;   /* 150% of 72px — matches Discord's sizing */
+  width:90px;   /* 150% of 72px — matches Discord's sizing */
   height:108px;
   top:50%;
   left:50%;
