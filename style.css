@@ -20,18 +20,21 @@ body{font-family:var(--font);color:var(--txt);background:var(--bg);min-height:10
 .bg-vignette{position:absolute;inset:-20%;background:radial-gradient(circle at 50% 20%,transparent 0%,rgba(0,0,0,.55) 58%,rgba(0,0,0,.85) 100%)}
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:56px 56px;opacity:.2}
 
+/* ── Topbar ── */
 .topbar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:22px clamp(16px,5vw,48px)}
 .topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
 .topbar-avatar{width:38px;height:38px;border-radius:12px;object-fit:cover;border:1px solid rgba(255,255,255,.16)}
 .topbar-title .name{font-weight:900}
-.topbar-title .tagline{font-size:.85rem;color:var(--muted2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-title .tagline{font-size:.85rem;color:var(--muted2);margin-top:2px}
 .topbar-right{display:flex;gap:10px}
 .iconbtn{width:40px;height:40px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--border);transition:transform .18s,border-color .18s,background .18s;text-decoration:none;color:var(--txt)}
 .iconbtn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
 .iconbtn img,.iconbtn svg{width:18px;height:18px;display:block}
 
+/* ── Dashboard grid ── */
 .dashboard{position:relative;z-index:2;padding:0 clamp(16px,5vw,48px) 48px;display:grid;grid-template-columns:1.1fr 1fr;gap:16px;max-width:1200px;margin:0 auto}
 
+/* ── Panels ── */
 .panel{border-radius:var(--radius);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .panel-header{padding:16px 18px 10px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(255,255,255,.06)}
 .panel-title{font-weight:900;letter-spacing:.8px;text-transform:uppercase;font-size:.82rem;color:rgba(234,240,255,.86)}
@@ -42,45 +45,66 @@ body{font-family:var(--font);color:var(--txt);background:var(--bg);min-height:10
 .panel-projects{grid-column:1/2}
 .panel-contact{grid-column:1/2}
 
-/* ── Discord card ───────────────────────────────────── */
-.discord-card{
-  margin:14px;
-  border-radius:16px;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,.09);
-  background:rgba(255,255,255,.02);
-}
+/* ── Discord card ── */
+.discord-card{margin:14px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.02)}
 
-/* Banner */
 .discord-banner{
   height:108px;
   position:relative;
-  background:radial-gradient(520px 220px at 20% 0%,rgba(88,101,242,.60),transparent 60%),radial-gradient(480px 260px at 85% 10%,rgba(35,165,90,.25),transparent 60%);
+  background:linear-gradient(135deg,#5865F2cc 0%,#3b449966 50%,#0b0d12 100%);
   transition:background .4s;
 }
 
-/* Avatar overlapping banner */
+/* Avatar wrap — sits at bottom-left of banner, hangs below */
 .discord-avatar-wrap{
   position:absolute;
-  bottom:-28px;
+  bottom:-32px;
   left:18px;
-  width:72px;height:72px;
+  width:72px;
+  height:72px;
 }
+
+/* The actual avatar circle */
 .discord-avatar{
-  width:72px;height:72px;
+  position:absolute;
+  inset:0;
+  width:72px;
+  height:72px;
   border-radius:50%;
   object-fit:cover;
   border:4px solid #111318;
   background:#0b0d12;
+  z-index:1;
   display:block;
 }
+
+/* Decoration — bigger than avatar, centered over it, no border-radius */
+.discord-decoration{
+  position:absolute;
+  width:108px;   /* 150% of 72px — matches Discord's sizing */
+  height:108px;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  z-index:2;
+  pointer-events:none;
+  border-radius:0;
+  border:none;
+  background:transparent;
+  display:none; /* shown by JS once src is set */
+}
+
+/* Status dot — sits bottom-right, above decoration */
 .discord-status-dot{
   position:absolute;
-  right:2px;bottom:2px;
-  width:16px;height:16px;
+  right:-1px;
+  bottom:-1px;
+  width:18px;
+  height:18px;
   border-radius:999px;
-  border:3px solid #111318;
+  border:4px solid #111318;
   background:var(--dc-grey);
+  z-index:3;
   transition:background .3s;
 }
 .discord-status-dot.online {background:var(--dc-green)}
@@ -90,41 +114,28 @@ body{font-family:var(--font);color:var(--txt);background:var(--bg);min-height:10
 
 /* Body below banner */
 .discord-body{
-  padding:36px 18px 16px; /* 36px top so avatar doesn't overlap text */
+  padding:42px 18px 16px; /* enough room for avatar hanging below banner */
   background:rgba(0,0,0,.22);
 }
 .discord-name-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.discord-display-name{font-size:1.15rem;font-weight:900;letter-spacing:.1px}
+.discord-display-name{font-size:1.15rem;font-weight:900}
 
-/* Status label pill (Discord style) */
-.discord-status-label{
-  font-size:.72rem;font-weight:700;
-  padding:3px 9px;border-radius:999px;letter-spacing:.4px;
-  border:1px solid rgba(255,255,255,.12);
-  color:rgba(255,255,255,.7);
-  background:rgba(255,255,255,.04);
-}
+.discord-status-label{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.4px;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);background:rgba(255,255,255,.04)}
 .discord-status-label.online {border-color:rgba(35,165,90,.4);background:rgba(35,165,90,.1);color:#2dc76d}
 .discord-status-label.idle   {border-color:rgba(240,178,50,.4);background:rgba(240,178,50,.1);color:#f0b232}
 .discord-status-label.dnd    {border-color:rgba(242,63,67,.4);background:rgba(242,63,67,.1);color:#f23f43}
 .discord-status-label.offline{border-color:rgba(128,132,142,.3);background:rgba(128,132,142,.08);color:#9ea3ad}
 
 .discord-handle{margin-top:3px;color:rgba(255,255,255,.42);font-size:.9rem}
-.discord-custom-status{margin-top:6px;color:rgba(255,255,255,.55);font-size:.88rem;font-style:italic}
+.discord-custom-status{margin-top:5px;color:rgba(255,255,255,.5);font-size:.88rem;font-style:italic}
 
-/* Activity block */
-.discord-activity-block{
-  margin-top:12px;padding:10px 12px;
-  border-radius:12px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.07);
-}
+.discord-activity-block{margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
 .discord-activity-title{font-size:.7rem;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:6px}
 .discord-activity{color:rgba(255,255,255,.82);font-size:.9rem;line-height:1.5}
 .discord-activity .act-details{font-size:.82rem;color:rgba(255,255,255,.55)}
 .discord-activity .act-state  {font-size:.82rem;color:rgba(255,255,255,.42)}
 
-/* Tech */
+/* ── Tech ── */
 .tech-groups{padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px}
 .tech-group-title{font-size:.72rem;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
 .tech-pills{display:flex;flex-wrap:wrap;gap:10px}
@@ -132,7 +143,7 @@ body{font-family:var(--font);color:var(--txt);background:var(--bg);min-height:10
 .tech-pill:hover{transform:translateY(-2px) scale(1.06);border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.06)}
 .tech-pill img{width:22px;height:22px;display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
 
-/* Projects */
+/* ── Projects ── */
 .project-list{padding:16px 18px 18px}
 .project{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:start}
 .project-icon{width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center}
@@ -149,65 +160,20 @@ body{font-family:var(--font);color:var(--txt);background:var(--bg);min-height:10
 .pill.muted{color:var(--muted2)}
 .divider{height:1px;background:rgba(255,255,255,.06);margin:16px 0}
 
-/* Contact */
+/* ── Contact ── */
 .contact-actions{padding:12px 18px 18px}
 .contact-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);text-decoration:none;color:var(--txt);transition:transform .18s,border-color .18s,background .18s}
 .contact-row:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
 .contact-left{display:flex;align-items:center;gap:12px;min-width:0}
 .contact-ico{width:40px;height:40px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.contact-ico svg{width:18px;height:18px}
+.contact-ico svg,.contact-ico img{width:18px;height:18px;display:block}
 .contact-text{min-width:0}
 .contact-label{font-size:.72rem;color:var(--muted2);text-transform:uppercase;letter-spacing:1px}
 .contact-value{margin-top:3px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .contact-right{opacity:.7;font-weight:900}
 
+/* ── Responsive ── */
 @media(max-width:980px){
   .dashboard{grid-template-columns:1fr}
   .panel-discord,.panel-tech,.panel-projects,.panel-contact{grid-column:auto;grid-row:auto}
-}
-
-/* Avatar decoration overlay */
-.discord-avatar-wrap {
-  position: absolute;
-  bottom: -28px;
-  left: 18px;
-  width: 72px;
-  height: 72px;
-}
-
-.discord-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #111318;
-  background: #0b0d12;
-  display: block;
-  position: relative;
-  z-index: 1;
-}
-
-.discord-decoration {
-  position: absolute;
-  width: 107px;
-  height: 107px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  pointer-events: none;
-  image-rendering: auto;
-}
-
-.discord-status-dot {
-  position: absolute;
-  right: 2px;
-  bottom: 2px;
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  border: 3px solid #111318;
-  background: var(--dc-grey);
-  transition: background .3s;
-  z-index: 3; 
 }
