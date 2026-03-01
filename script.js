@@ -1,6 +1,10 @@
-const DISCORD_ID     = "1210792136094650399";
-const DUSTIN_API     = `https://dcdn.dstn.to/profile/${DISCORD_ID}`;
-const LANYARD_API    = `https://api.lanyard.rest/v1/users/${DISCORD_ID}`;
+const DISCORD_ID  = "1210792136094650399";
+const DUSTIN_API  = `https://dcdn.dstn.to/profile/${DISCORD_ID}`;
+const LANYARD_API = `https://api.lanyard.rest/v1/users/${DISCORD_ID}`;
+
+const MY_AVATAR = "945ae26d4ccdb7349c26476664b901b1";
+const MY_NAME   = "myrixx";
+const MY_USER   = "_myrixx";
 
 const CSS3_ICON = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg";
 const CPP_ICON  = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg";
@@ -25,9 +29,31 @@ const techTools = [
   { name: "Figma",        icon: "https://cdn.simpleicons.org/figma/F24E1E" },
 ];
 
-function renderTech(targetId, items) {
-  const el = document.getElementById(targetId);
+/* ── Country scramble — never resolves ── */
+function startCountryAnim() {
+  const el = document.getElementById("countryText");
   if (!el) return;
+
+  const length = 15;
+  const chars  = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+
+  function scramble() {
+    let display = "";
+    for (let i = 0; i < length; i++) {
+      display += chars[Math.floor(Math.random() * chars.length)];
+    }
+    el.textContent = display;
+  }
+
+  scramble();
+  setInterval(scramble, 80);
+}
+
+/* ── Tech pills ── */
+function renderTech(id, items) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = "";
   for (const item of items) {
     const pill = document.createElement("div");
     pill.className = "tech-pill";
@@ -41,163 +67,164 @@ function renderTech(targetId, items) {
   }
 }
 
-function pickActivityText(presence) {
-  if (presence?.listening_to_spotify && presence.spotify) {
-    return `🎵 Listening to <strong>${presence.spotify.song}</strong> by ${presence.spotify.artist}`;
+/* ── Local clock GMT+8 ── */
+function startLocalClock() {
+  const el = document.getElementById("discordLocalTime");
+  if (!el) return;
+  function tick() {
+    const utc8 = new Date(Date.now() + 8 * 3600000);
+    const h = String(utc8.getUTCHours()).padStart(2, "0");
+    const m = String(utc8.getUTCMinutes()).padStart(2, "0");
+    const s = String(utc8.getUTCSeconds()).padStart(2, "0");
+    el.textContent = `${h}:${m}:${s}`;
   }
-  const activities = Array.isArray(presence?.activities) ? presence.activities : [];
-  const real = activities.filter(a => a && a.type !== 4);
-  if (real.length === 0) return null;
-  const a = real[0];
-  const typeMap = { 0:"Playing", 1:"Streaming", 2:"Listening to", 3:"Watching", 5:"Competing in" };
-  const verb = typeMap[a.type] ?? "Doing";
-  let text = `${verb} <strong>${a.name}</strong>`;
-  if (a.details) text += `<br><span class="act-details">${a.details}</span>`;
-  if (a.state)   text += `<br><span class="act-state">${a.state}</span>`;
-  return text;
+  tick();
+  setInterval(tick, 1000);
 }
 
+/* ── Activity text ── */
+function pickActivityText(p) {
+  if (p?.listening_to_spotify && p.spotify)
+    return `🎵 <strong>${p.spotify.song}</strong> — ${p.spotify.artist}`;
+  const acts = (p?.activities ?? []).filter(a => a.type !== 4);
+  if (!acts.length) return null;
+  const a = acts[0];
+  const v = { 0:"Playing", 1:"Streaming", 2:"Listening to", 3:"Watching", 5:"Competing in" };
+  let t = `${v[a.type] ?? "Doing"} <strong>${a.name}</strong>`;
+  if (a.details) t += `<br><span class="act-details">${a.details}</span>`;
+  if (a.state)   t += `<br><span class="act-state">${a.state}</span>`;
+  return t;
+}
+
+/* ── Banner ── */
 function applyBanner(profile, status) {
-  const bannerEl = document.getElementById("discordBanner");
-  if (!bannerEl) return;
-
-  const bannerHash = profile?.banner;
-  if (bannerHash) {
-    const ext = bannerHash.startsWith("a_") ? "gif" : "png";
-    const url = `https://cdn.discordapp.com/banners/${DISCORD_ID}/${bannerHash}.${ext}?size=600`;
-    bannerEl.style.cssText = `background-image:url("${url}");background-size:cover;background-position:center top;`;
-    console.log("[Banner] image:", url);
+  const el = document.getElementById("discordBanner");
+  if (!el) return;
+  const hash = profile?.banner;
+  if (hash) {
+    const ext = hash.startsWith("a_") ? "gif" : "png";
+    el.style.cssText = `background-image:url("https://cdn.discordapp.com/banners/${DISCORD_ID}/${hash}.${ext}?size=600");background-size:cover;background-position:center top;`;
     return;
   }
-
-  const accent = profile?.banner_color ?? profile?.accent_color;
-  const hex = accent
-    ? (typeof accent === "number" ? "#" + accent.toString(16).padStart(6,"0") : accent)
+  const raw = profile?.banner_color ?? profile?.accent_color;
+  const hex = raw
+    ? (typeof raw === "number" ? "#" + raw.toString(16).padStart(6, "0") : raw)
     : null;
-
   if (hex) {
-    bannerEl.style.cssText = `background:linear-gradient(135deg,${hex}ee 0%,${hex}44 60%,#0b0d12 100%);`;
-    console.log("[Banner] accent colour:", hex);
+    el.style.cssText = `background:linear-gradient(135deg,${hex}cc 0%,${hex}22 70%,#0d0d11 100%);`;
     return;
   }
-
   const sc = {
-    online:  ["#23a55a","#1e7a42"],
-    idle:    ["#f0b232","#b07d1a"],
-    dnd:     ["#f23f43","#a82b2e"],
-    offline: ["#5865F2","#3b4499"],
+    online:  ["#23a55a", "#1e7a42"],
+    idle:    ["#f0b232", "#b07d1a"],
+    dnd:     ["#f23f43", "#a82b2e"],
+    offline: ["#1a1c2e", "#0d0d11"],
   };
   const [c1, c2] = sc[status] ?? sc.offline;
-  bannerEl.style.cssText = `background:linear-gradient(135deg,${c1}cc 0%,${c2}66 50%,#0b0d12 100%);`;
-  console.log("[Banner] gradient fallback — no banner or accent on this profile");
+  el.style.cssText = `background:linear-gradient(135deg,${c1} 0%,${c2} 100%);`;
 }
 
+/* ── Decoration ── */
 function applyDecoration(profile) {
-  const decoEl = document.getElementById("discordDecoration");
-  if (!decoEl) return;
-
+  const el = document.getElementById("discordDecoration");
+  if (!el) return;
   const asset = profile?.avatar_decoration_data?.asset;
   if (asset) {
     const ext = asset.startsWith("a_") ? "gif" : "png";
-    const url = `https://cdn.discordapp.com/avatar-decoration-presets/${asset}.${ext}?size=160&passthrough=true`;
-    decoEl.src = url;
-    decoEl.style.display = "block";
-    decoEl.onerror = () => {
-      decoEl.src = "assets/decoration.png";
-      decoEl.onerror = () => { decoEl.style.display = "none"; };
+    el.src = `https://cdn.discordapp.com/avatar-decoration-presets/${asset}.${ext}?size=160&passthrough=true`;
+    el.style.display = "block";
+    el.onerror = () => {
+      el.src = "assets/decoration.png";
+      el.onerror = () => { el.style.display = "none"; };
     };
-    console.log("[Decoration] asset:", url);
     return;
   }
-
-  decoEl.src = "assets/decoration.png";
-  decoEl.style.display = "block";
-  decoEl.onerror = () => { decoEl.style.display = "none"; };
+  el.src = "assets/decoration.png";
+  el.style.display = "block";
+  el.onerror = () => { el.style.display = "none"; };
 }
 
+/* ── Profile effect ── */
 function applyProfileEffect(profile) {
-  const effectEl = document.getElementById("discordEffect");
-  if (!effectEl) return;
-
-  const effectId = profile?.profile_effect?.id ?? profile?.profile_effect_config?.id;
-  if (!effectId) {
-    effectEl.style.display = "none";
-    return;
-  }
-
-  const url = `https://effects.discu.eu/effects/${effectId}/intro.webm`;
-  effectEl.src = url;
-  effectEl.style.display = "block";
-  effectEl.load();
-  effectEl.play().catch(() => {});
-  console.log("[Effect]", url);
+  const el = document.getElementById("discordEffect");
+  if (!el) return;
+  const id = profile?.profile_effect?.id ?? profile?.profile_effect_config?.id;
+  if (!id) { el.style.display = "none"; return; }
+  el.src = `https://effects.discu.eu/effects/${id}/intro.webm`;
+  el.style.display = "block";
+  el.load();
+  el.play().catch(() => {});
 }
 
-function setDiscordUI(lanyardData, dustinProfile) {
-  const avatarHash = dustinProfile?.avatar ?? "945ae26d4ccdb7349c26476664b901b1";
-  const avatarExt  = avatarHash.startsWith("a_") ? "gif" : "png";
-  const avatarUrl  = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatarHash}.${avatarExt}?size=128`;
-  const avatarEl   = document.getElementById("discordAvatar");
-  if (avatarEl) avatarEl.src = avatarUrl;
+/* ── Main Discord UI update ── */
+function setDiscordUI(lanyard, profile) {
+  const isYou = profile?.id === DISCORD_ID || lanyard?.discord_user?.id === DISCORD_ID;
 
-  const status = lanyardData?.discord_status ?? "offline";
+  // avatar
+  const hash = isYou ? (profile?.avatar ?? MY_AVATAR) : MY_AVATAR;
+  const ext  = hash.startsWith("a_") ? "gif" : "png";
+  const avatarEl = document.getElementById("discordAvatar");
+  if (avatarEl) avatarEl.src = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${hash}.${ext}?size=128`;
 
-  applyBanner(dustinProfile, status);
-  applyDecoration(dustinProfile);
-  applyProfileEffect(dustinProfile);
+  const status = lanyard?.discord_status ?? "offline";
+  applyBanner(profile, status);
+  applyDecoration(profile);
+  applyProfileEffect(profile);
 
+  // name + handle
   const dnEl = document.getElementById("discordDisplayName");
-  if (dnEl) dnEl.textContent = dustinProfile?.global_name ?? "myrixx";
-  const handleEl = document.getElementById("discordHandle");
-  if (handleEl) handleEl.textContent = `@${dustinProfile?.username ?? "myrixx"}`;
+  if (dnEl) dnEl.textContent = isYou
+    ? (profile?.global_name ?? lanyard?.discord_user?.global_name ?? MY_NAME)
+    : MY_NAME;
 
+  const hEl = document.getElementById("discordHandle");
+  if (hEl) hEl.textContent = `@${isYou
+    ? (profile?.username ?? lanyard?.discord_user?.username ?? MY_USER)
+    : MY_USER}`;
+
+  // status dot + label
   const labels = { online:"online", idle:"idle", dnd:"do not disturb", offline:"offline" };
   const dot = document.getElementById("discordStatusDot");
   if (dot) dot.className = `discord-status-dot ${status}`;
-  const stText = document.getElementById("discordStatusText");
-  if (stText) {
-    stText.className = `discord-status-label ${status}`;
-    stText.textContent = labels[status] ?? status;
+  const stEl = document.getElementById("discordStatusText");
+  if (stEl) {
+    stEl.className = `discord-status-label ${status}`;
+    stEl.textContent = labels[status] ?? status;
   }
 
-
-  const custom   = (lanyardData?.activities ?? []).find(a => a.type === 4);
-  const customEl = document.getElementById("discordCustomStatus");
-  if (customEl) {
-    customEl.style.display = custom?.state ? "block" : "none";
-    if (custom?.state) customEl.textContent = `${custom.emoji?.name ?? ""} ${custom.state}`.trim();
+  // custom status
+  const custom = (lanyard?.activities ?? []).find(a => a.type === 4);
+  const cEl = document.getElementById("discordCustomStatus");
+  if (cEl) {
+    cEl.style.display = custom?.state ? "block" : "none";
+    if (custom?.state) cEl.textContent = `${custom.emoji?.name ?? ""} ${custom.state}`.trim();
   }
 
-  const actEl   = document.getElementById("discordActivity");
-  const actWrap = document.getElementById("discordActivityWrap");
-  const actText = pickActivityText(lanyardData);
-  if (actWrap) actWrap.style.display = actText ? "block" : "none";
-  if (actEl)   actEl.innerHTML = actText ?? "";
+  // activity
+  const actText = pickActivityText(lanyard);
+  const aWrap   = document.getElementById("discordActivityWrap");
+  const aEl     = document.getElementById("discordActivity");
+  if (aWrap) aWrap.style.display = actText ? "block" : "none";
+  if (aEl)   aEl.innerHTML = actText ?? "";
 }
 
+/* ── Fetch Lanyard + Dustin ── */
 async function fetchAll() {
-  const [lanyardRes, dustinRes] = await Promise.allSettled([
+  const [lr, dr] = await Promise.allSettled([
     fetch(LANYARD_API).then(r => r.json()),
     fetch(DUSTIN_API).then(r => r.json()),
   ]);
-
-  const lanyardData  = lanyardRes.status === "fulfilled" && lanyardRes.value?.success
-    ? lanyardRes.value.data
-    : null;
-
-  const dustinProfile = dustinRes.status === "fulfilled"
-    ? dustinRes.value
-    : null;
-
-  console.log("[Dustin]", dustinProfile);
-  console.log("[Lanyard]", lanyardData);
-
-  setDiscordUI(lanyardData, dustinProfile);
+  const lanyard = lr.status === "fulfilled" && lr.value?.success ? lr.value.data : null;
+  const profile = dr.status === "fulfilled" ? dr.value : null;
+  setDiscordUI(lanyard, profile);
 }
 
+/* ── Init ── */
 document.addEventListener("DOMContentLoaded", () => {
   renderTech("techCore", techCore);
   renderTech("techTools", techTools);
+  startLocalClock();
+  startCountryAnim();
   fetchAll();
   setInterval(fetchAll, 20_000);
 });
