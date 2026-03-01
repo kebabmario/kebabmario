@@ -42,13 +42,22 @@
       <div class="discord-card">
 
         <div class="discord-banner" id="discordBanner">
-          <!-- Avatar + decoration overlay -->
+
+          <!-- Profile effect video overlay -->
+          <video
+            id="discordEffect"
+            class="discord-effect"
+            autoplay loop muted playsinline
+            style="display:none"
+          ></video>
+
+          <!-- Avatar + decoration + status dot -->
           <div class="discord-avatar-wrap">
             <img id="discordAvatar" class="discord-avatar" src="assets/favicon.jpg" alt="avatar" />
-            <!-- decoration sits on top of avatar, same size, absolutely positioned -->
             <img id="discordDecoration" class="discord-decoration" src="" alt="" style="display:none" />
             <span id="discordStatusDot" class="discord-status-dot offline"></span>
           </div>
+
         </div>
 
         <div class="discord-body">
@@ -71,7 +80,7 @@
     <section class="panel panel-tech">
       <div class="panel-header">
         <div class="panel-title">tech stack</div>
-        <div class="panel-sub">tools and technologies</div>
+        <div class="panel-sub">icons only</div>
       </div>
       <div class="tech-groups">
         <div class="tech-group">
@@ -92,6 +101,7 @@
         <div class="panel-sub">things i shipped</div>
       </div>
       <div class="project-list">
+
         <div class="project">
           <div class="project-icon"><img src="assets/toaster.png" alt="toaster" /></div>
           <div class="project-info">
@@ -99,7 +109,9 @@
               <div class="project-name">toaster</div>
               <div class="project-links">
                 <a class="mini" href="https://usetoaster.app" target="_blank" aria-label="toaster site">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17L17 7"></path><path d="M7 7h10v10"></path>
+                  </svg>
                 </a>
                 <a class="mini" href="https://github.com/kebabmario/toaster" target="_blank" aria-label="toaster github">
                   <img src="https://cdn.simpleicons.org/github/ffffff" alt="github" />
@@ -114,7 +126,9 @@
             </div>
           </div>
         </div>
+
         <div class="divider"></div>
+
         <div class="project">
           <div class="project-icon"><img src="assets/atmos.png" alt="atmos" /></div>
           <div class="project-info">
@@ -122,7 +136,9 @@
               <div class="project-name">atmos</div>
               <div class="project-links">
                 <a class="mini" href="https://useatmos.me" target="_blank" aria-label="atmos site">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17L17 7"></path><path d="M7 7h10v10"></path>
+                  </svg>
                 </a>
                 <a class="mini" href="https://github.com/kebabmario/atmos" target="_blank" aria-label="atmos github">
                   <img src="https://cdn.simpleicons.org/github/ffffff" alt="github" />
@@ -137,6 +153,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
@@ -166,6 +183,7 @@
     </section>
 
   </main>
+
   <script src="script.js"></script>
 </body>
 </html>
