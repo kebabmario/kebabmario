@@ -3,186 +3,154 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kebabmario</title>
+  <title>myrixx/kebabmario</title>
   <link rel="icon" type="image/jpeg" href="assets/favicon.jpg" />
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <div class="bg">
     <div class="bg-vignette"></div>
     <div class="bg-grid"></div>
   </div>
 
-  <header class="topbar">
-    <div class="topbar-left">
-      <img class="topbar-avatar" src="assets/favicon.jpg" alt="kebabmario" />
-      <div class="topbar-title">
-        <div class="name">kebabmario</div>
-        <div class="tagline">experienced web dev · minecraft plugin dev</div>
-      </div>
-    </div>
-    <div class="topbar-right">
-      <a class="iconbtn" href="https://github.com/kebabmario" target="_blank" aria-label="GitHub">
-        <img src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub" />
-      </a>
-      <a class="iconbtn" href="mailto:kebabmario@kebabmario.dev" aria-label="Email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-          <polyline points="2,4 12,13 22,4"></polyline>
-        </svg>
-      </a>
-    </div>
-  </header>
+  <img src="assets/makima.png" alt="" class="char char-makima" aria-hidden="true" />
+  <img src="assets/reze.png"   alt="" class="char char-reze"   aria-hidden="true" />
 
-  <main class="dashboard">
+  <div class="layout">
 
-    <!-- Discord presence widget -->
-    <section class="panel panel-discord">
-      <div class="discord-card">
+    <div class="left-col">
 
+      <div class="card card-discord">
         <div class="discord-banner" id="discordBanner">
-
-          <!-- Profile effect video overlay -->
-          <video
-            id="discordEffect"
-            class="discord-effect"
-            autoplay loop muted playsinline
-            style="display:none"
-          ></video>
-
-          <!-- Avatar + decoration + status dot -->
+          <video id="discordEffect" class="discord-effect" autoplay loop muted playsinline style="display:none"></video>
+        </div>
+        <div class="discord-below-banner">
           <div class="discord-avatar-wrap">
             <img id="discordAvatar" class="discord-avatar" src="assets/favicon.jpg" alt="avatar" />
             <img id="discordDecoration" class="discord-decoration" src="" alt="" style="display:none" />
             <span id="discordStatusDot" class="discord-status-dot offline"></span>
           </div>
-
         </div>
-
         <div class="discord-body">
           <div class="discord-name-row">
-            <span id="discordDisplayName" class="discord-display-name">loading…</span>
-            <span id="discordStatusText" class="discord-status-label offline">offline</span>
+            <div class="discord-name-left">
+              <span id="discordDisplayName" class="discord-display-name">myrixx</span>
+              <span id="discordStatusText" class="discord-status-label offline">offline</span>
+            </div>
+            <div class="discord-name-right">
+              <span class="discord-clock-icon"></span>
+              <span id="discordLocalTime" class="discord-local-time"></span>
+            </div>
           </div>
-          <div id="discordHandle" class="discord-handle">@_myrixx</div>
+          <div class="discord-handle-row">
+            <span id="discordHandle" class="discord-handle">@_myrixx</span>
+            <span class="discord-platform"></span>
+          </div>
           <div id="discordCustomStatus" class="discord-custom-status" style="display:none"></div>
           <div id="discordActivityWrap" class="discord-activity-block" style="display:none">
-            <div class="discord-activity-title">Activity</div>
             <div id="discordActivity" class="discord-activity"></div>
           </div>
         </div>
-
       </div>
-    </section>
 
-    <!-- Tech Stack -->
-    <section class="panel panel-tech">
-      <div class="panel-header">
-        <div class="panel-title">tech stack</div>
-        <div class="panel-sub">icons only</div>
-      </div>
-      <div class="tech-groups">
-        <div class="tech-group">
-          <div class="tech-group-title">core</div>
-          <div class="tech-pills" id="techCore"></div>
+      <div class="card card-about">
+        <div class="card-header">About Me</div>
+        <div class="about-body">
+          <div class="about-section">
+            <div class="about-heading">Who am I?</div>
+            <p>i'm myrixx/kebabmario, an <strong>experienced web dev</strong> &amp; <strong>minecraft plugin dev</strong> from <span id="countryText" class="country-anim"></span></p>
+          </div>
+          <div class="about-section">
+            <div class="about-heading">My Interests</div>
+            <p>i love coding, drawing, and spending <span class="red">(all my)</span> time on minecraft :3</p>
+          </div>
+          <div class="about-links">
+            <a class="about-link" href="https://github.com/kebabmario" target="_blank">
+              <img src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub" /> github
+            </a>
+            <a class="about-link" href="mailto:kebabmario@kebabmario.dev">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><polyline points="2,4 12,13 22,4"></polyline></svg>
+              email
+            </a>
+          </div>
         </div>
-        <div class="tech-group">
-          <div class="tech-group-title">tools + platforms</div>
-          <div class="tech-pills" id="techTools"></div>
+      </div>
+
+    </div>
+
+    <div class="right-col">
+
+      <div class="card card-tech">
+        <div class="card-header">Tech Stack</div>
+        <div class="tech-groups">
+          <div class="tech-group">
+            <div class="tech-group-title">core</div>
+            <div class="tech-pills" id="techCore"></div>
+          </div>
+          <div class="tech-group">
+            <div class="tech-group-title">tools + platforms</div>
+            <div class="tech-pills" id="techTools"></div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- Projects -->
-    <section class="panel panel-projects">
-      <div class="panel-header">
-        <div class="panel-title">projects</div>
-        <div class="panel-sub">things i shipped</div>
-      </div>
-      <div class="project-list">
+      <div class="card card-projects">
+        <div class="card-header">Projects</div>
+        <div class="project-list">
 
-        <div class="project">
-          <div class="project-icon"><img src="assets/toaster.png" alt="toaster" /></div>
-          <div class="project-info">
-            <div class="project-top">
-              <div class="project-name">toaster</div>
-              <div class="project-links">
-                <a class="mini" href="https://usetoaster.app" target="_blank" aria-label="toaster site">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M7 17L17 7"></path><path d="M7 7h10v10"></path>
-                  </svg>
-                </a>
-                <a class="mini" href="https://github.com/kebabmario/toaster" target="_blank" aria-label="toaster github">
-                  <img src="https://cdn.simpleicons.org/github/ffffff" alt="github" />
-                </a>
+          <div class="project">
+            <div class="project-icon"><img src="assets/toaster.png" alt="toaster" /></div>
+            <div class="project-info">
+              <div class="project-top">
+                <div class="project-name">toaster</div>
+                <div class="project-links">
+                  <a class="mini" href="https://usetoaster.app" target="_blank">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg>
+                  </a>
+                  <a class="mini" href="https://github.com/kebabmario/toaster" target="_blank">
+                    <img src="https://cdn.simpleicons.org/github/ffffff" alt="github" />
+                  </a>
+                </div>
+              </div>
+              <div class="project-desc">internet speedtest powered by cloudflare test endpoints.</div>
+              <div class="project-meta">
+                <span class="pill">cloudflare</span>
+                <span class="pill">web</span>
+                <span class="pill muted">usetoaster.app</span>
               </div>
             </div>
-            <div class="project-desc">internet speedtest powered by cloudflare test endpoints.</div>
-            <div class="project-meta">
-              <span class="pill">cloudflare</span>
-              <span class="pill">web</span>
-              <span class="pill muted">usetoaster.app</span>
-            </div>
           </div>
-        </div>
 
-        <div class="divider"></div>
+          <div class="divider"></div>
 
-        <div class="project">
-          <div class="project-icon"><img src="assets/atmos.png" alt="atmos" /></div>
-          <div class="project-info">
-            <div class="project-top">
-              <div class="project-name">atmos</div>
-              <div class="project-links">
-                <a class="mini" href="https://useatmos.me" target="_blank" aria-label="atmos site">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M7 17L17 7"></path><path d="M7 7h10v10"></path>
-                  </svg>
-                </a>
-                <a class="mini" href="https://github.com/kebabmario/atmos" target="_blank" aria-label="atmos github">
-                  <img src="https://cdn.simpleicons.org/github/ffffff" alt="github" />
-                </a>
+          <div class="project">
+            <div class="project-icon"><img src="assets/atmos.png" alt="atmos" /></div>
+            <div class="project-info">
+              <div class="project-top">
+                <div class="project-name">atmos</div>
+                <div class="project-links">
+                  <a class="mini" href="https://useatmos.me" target="_blank">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg>
+                  </a>
+                  <a class="mini" href="https://github.com/kebabmario/atmos" target="_blank">
+                    <img src="https://cdn.simpleicons.org/github/ffffff" alt="github" />
+                  </a>
+                </div>
+              </div>
+              <div class="project-desc">weather website powered by open-meteo (clean ui, accurate forecasts).</div>
+              <div class="project-meta">
+                <span class="pill">open-meteo</span>
+                <span class="pill">web</span>
+                <span class="pill muted">useatmos.me</span>
               </div>
             </div>
-            <div class="project-desc">weather website powered by open-meteo (clean ui, accurate forecasts).</div>
-            <div class="project-meta">
-              <span class="pill">open-meteo</span>
-              <span class="pill">web</span>
-              <span class="pill muted">useatmos.me</span>
-            </div>
           </div>
+
         </div>
-
       </div>
-    </section>
 
-    <!-- Contact -->
-    <section class="panel panel-contact">
-      <div class="panel-header">
-        <div class="panel-title">contact</div>
-        <div class="panel-sub">hit me up</div>
-      </div>
-      <div class="contact-actions">
-        <a class="contact-row" href="mailto:kebabmario@kebabmario.dev">
-          <div class="contact-left">
-            <div class="contact-ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                <polyline points="2,4 12,13 22,4"></polyline>
-              </svg>
-            </div>
-            <div class="contact-text">
-              <div class="contact-label">email</div>
-              <div class="contact-value">kebabmario@kebabmario.dev</div>
-            </div>
-          </div>
-          <div class="contact-right">↗</div>
-        </a>
-      </div>
-    </section>
-
-  </main>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
