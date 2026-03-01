@@ -1,5 +1,8 @@
 const DISCORD_ID = "1210792136094650399";
 
+// Avatar decoration (from your Discord profile data)
+const DECORATION_URL = "https://cdn.discordapp.com/avatar-decoration-presets/a_3c97a2d37f433a7913a1c7b7a735d000.gif?size=160&passthrough=true";
+
 const CSS3_ICON = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg";
 
 const techCore = [
@@ -58,89 +61,66 @@ function applyBanner(user, status) {
   const bannerEl = document.getElementById("discordBanner");
   if (!bannerEl) return;
 
-  // ── 1. User has a Nitro banner image ──────────────────
   const bannerHash = user?.banner;
   if (bannerHash) {
     const ext = bannerHash.startsWith("a_") ? "gif" : "png";
     const url = `https://cdn.discordapp.com/banners/${DISCORD_ID}/${bannerHash}.${ext}?size=600`;
-    bannerEl.style.cssText = `
-      background-image: url("${url}");
-      background-size: cover;
-      background-position: center top;
-    `;
-    console.log("[Banner] using image:", url);
+    bannerEl.style.cssText = `background-image:url("${url}");background-size:cover;background-position:center top;`;
     return;
   }
 
-  // ── 2. User has an accent colour (no image) ───────────
-  const accent = user?.banner_color; // e.g. "#5865F2"
+  const accent = user?.banner_color;
   if (accent) {
-    // Build a richer gradient from the accent colour
-    bannerEl.style.cssText = `
-      background-image: none;
-      background: linear-gradient(135deg, ${accent}ee 0%, ${accent}55 60%, #111318 100%);
-    `;
-    console.log("[Banner] using accent colour:", accent);
+    bannerEl.style.cssText = `background-image:none;background:linear-gradient(135deg,${accent}ee 0%,${accent}55 60%,#111318 100%);`;
     return;
   }
 
-  // ── 3. Hard fallback: visible animated gradient ───────
-  // Status-tinted so it always looks intentional
   const statusColors = {
-    online:  ["#23a55a", "#1e7a42"],
-    idle:    ["#f0b232", "#b07d1a"],
-    dnd:     ["#f23f43", "#a82b2e"],
-    offline: ["#5865F2", "#3b4499"],
+    online:  ["#23a55a","#1e7a42"],
+    idle:    ["#f0b232","#b07d1a"],
+    dnd:     ["#f23f43","#a82b2e"],
+    offline: ["#5865F2","#3b4499"],
   };
   const [c1, c2] = statusColors[status] ?? statusColors.offline;
-  bannerEl.style.cssText = `
-    background-image: none;
-    background: linear-gradient(135deg, ${c1}cc 0%, ${c2}66 50%, #0b0d12 100%);
-  `;
-  console.log("[Banner] fallback gradient — no banner hash or accent returned by Lanyard for this user");
-  console.log("[Banner] If you have a Discord banner, make sure you have Nitro and the banner is set on your profile");
+  bannerEl.style.cssText = `background-image:none;background:linear-gradient(135deg,${c1}cc 0%,${c2}66 50%,#0b0d12 100%);`;
 }
 
 function setDiscordUI(p) {
   const user = p?.discord_user;
 
-  // Debug — open browser console to see exactly what Lanyard returns
-  console.log("[Lanyard] full presence:", JSON.stringify(p, null, 2));
-  console.log("[Lanyard] discord_user.banner:", user?.banner);
-  console.log("[Lanyard] discord_user.banner_color:", user?.banner_color);
+  // Avatar — prefer live hash from Lanyard, fallback to known hash
+  const avatarHash = user?.avatar ?? "945ae26d4ccdb7349c26476664b901b1";
+  const avatarExt  = avatarHash.startsWith("a_") ? "gif" : "png";
+  const avatarUrl  = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatarHash}.${avatarExt}?size=128`;
 
-  // Avatar
-  const avatarHash = user?.avatar;
-  const avatarUrl  = avatarHash
-    ? `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatarHash}.${avatarHash.startsWith("a_") ? "gif" : "png"}?size=128`
-    : "assets/favicon.jpg";
   const avatarEl = document.getElementById("discordAvatar");
   if (avatarEl) avatarEl.src = avatarUrl;
 
-  const status = p?.discord_status ?? "offline";
+  // Decoration — always overlay the known decoration gif
+  const decoEl = document.getElementById("discordDecoration");
+  if (decoEl) {
+    decoEl.src = DECORATION_URL;
+    decoEl.style.display = "block";
+  }
 
-  // Banner (must come after status is known)
+  const status = p?.discord_status ?? "offline";
   applyBanner(user, status);
 
   // Name
   const username = user?.global_name || user?.username || "kebabmario";
   const dnEl = document.getElementById("discordDisplayName");
   if (dnEl) dnEl.textContent = username;
-
   const handleEl = document.getElementById("discordHandle");
   if (handleEl) handleEl.textContent = `@${user?.username ?? "kebabmario"}`;
 
   // Status
-  const labels = { online: "online", idle: "idle", dnd: "do not disturb", offline: "offline" };
+  const labels = { online:"online", idle:"idle", dnd:"do not disturb", offline:"offline" };
   const dot = document.getElementById("discordStatusDot");
   if (dot) dot.className = `discord-status-dot ${status}`;
   const stText = document.getElementById("discordStatusText");
-  if (stText) {
-    stText.className = `discord-status-label ${status}`;
-    stText.textContent = labels[status] ?? status;
-  }
+  if (stText) { stText.className = `discord-status-label ${status}`; stText.textContent = labels[status] ?? status; }
 
-  // Custom status (type 4) — shown as italic sub-line
+  // Custom status (type 4)
   const customStatus = (p?.activities ?? []).find(a => a.type === 4);
   const customEl = document.getElementById("discordCustomStatus");
   if (customEl) {
@@ -152,7 +132,7 @@ function setDiscordUI(p) {
     }
   }
 
-  // Real activity (no type 4)
+  // Real activity
   const actEl   = document.getElementById("discordActivity");
   const actWrap = document.getElementById("discordActivityWrap");
   const actText = pickActivityText(p);
