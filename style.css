@@ -165,3 +165,49 @@ body{font-family:var(--font);color:var(--txt);background:var(--bg);min-height:10
   .dashboard{grid-template-columns:1fr}
   .panel-discord,.panel-tech,.panel-projects,.panel-contact{grid-column:auto;grid-row:auto}
 }
+
+/* Avatar decoration overlay */
+.discord-avatar-wrap {
+  position: absolute;
+  bottom: -28px;
+  left: 18px;
+  width: 72px;
+  height: 72px;
+}
+
+.discord-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #111318;
+  background: #0b0d12;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.discord-decoration {
+  position: absolute;
+  width: 107px;
+  height: 107px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+  image-rendering: auto;
+}
+
+.discord-status-dot {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 3px solid #111318;
+  background: var(--dc-grey);
+  transition: background .3s;
+  z-index: 3; 
+}
