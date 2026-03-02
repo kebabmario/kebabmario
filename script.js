@@ -214,34 +214,26 @@ function pickActivityText(p) {
   return t;
 }
 
-/* ── Banner (uses Dustin API banner when present) ── */
 function applyBanner(profile, status) {
   const el = document.getElementById("discordBanner");
   if (!el) return;
 
-  // Dustin returns `banner` hash when you have a banner set.
   const bannerHash = profile?.banner;
-
   if (bannerHash) {
     const ext = bannerHash.startsWith("a_") ? "gif" : "png";
-    el.style.cssText =
-      `background-image:url("https://cdn.discordapp.com/banners/${DISCORD_ID}/${bannerHash}.${ext}?size=600");` +
-      `background-size:cover;background-position:center top;`;
+    el.style.backgroundImage = `url("https://cdn.discordapp.com/banners/${DISCORD_ID}/${bannerHash}.${ext}?size=1024")`;
+    el.style.backgroundSize = "cover";
+    el.style.backgroundPosition = "center top";
     return;
   }
 
-  // fallback: use accent/banner color from Dustin if available
-  const raw = profile?.banner_color ?? profile?.accent_color;
-  const hex = raw
-    ? (typeof raw === "number" ? "#" + raw.toString(16).padStart(6, "0") : raw)
-    : null;
-
-  if (hex) {
-    el.style.cssText = `background:linear-gradient(135deg,${hex}cc 0%,${hex}22 70%,#07070d 100%);`;
+  const color = profile?.banner_color ?? profile?.accent_color;
+  if (color) {
+    el.style.background = color;
     return;
   }
 
-  // fallback fallback: status gradient
+  // fallback if neither exists
   const sc = {
     online:  ["#23a55a","#1e7a42"],
     idle:    ["#f0b232","#b07d1a"],
@@ -249,7 +241,7 @@ function applyBanner(profile, status) {
     offline: ["#1a1c2e","#07070d"],
   };
   const [c1, c2] = sc[status] ?? sc.offline;
-  el.style.cssText = `background:linear-gradient(135deg,${c1} 0%,${c2} 100%);`;
+  el.style.background = `linear-gradient(135deg,${c1} 0%,${c2} 100%)`;
 }
 
 /* ── Decoration ── */
