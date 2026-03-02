@@ -42,7 +42,6 @@ function initSpace() {
   resize();
   window.addEventListener("resize", resize);
 
-  // ── Stars ──
   const STAR_COUNT = 280;
   const stars = Array.from({ length: STAR_COUNT }, () => ({
     x:       Math.random() * window.innerWidth,
@@ -53,30 +52,25 @@ function initSpace() {
     speed:   Math.random() * 0.04 + 0.01,
   }));
 
-  // ── Shooting stars ──
   const shooters = [];
-
   function spawnShooter() {
     shooters.push({
-      x:       Math.random() * canvas.width,
-      y:       Math.random() * canvas.height * 0.5,
-      len:     Math.random() * 120 + 60,
-      speed:   Math.random() * 8 + 6,
-      angle:   Math.PI / 4 + (Math.random() - 0.5) * 0.3,
-      alpha:   1,
-      fade:    Math.random() * 0.018 + 0.012,
-      width:   Math.random() * 1.2 + 0.4,
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * canvas.height * 0.5,
+      len:   Math.random() * 120 + 60,
+      speed: Math.random() * 8 + 6,
+      angle: Math.PI / 4 + (Math.random() - 0.5) * 0.3,
+      alpha: 1,
+      fade:  Math.random() * 0.018 + 0.012,
+      width: Math.random() * 1.2 + 0.4,
     });
   }
-
-  // spawn a shooter every 2.5–5s
   function scheduleShooter() {
     spawnShooter();
     setTimeout(scheduleShooter, Math.random() * 2500 + 2500);
   }
   setTimeout(scheduleShooter, 1000);
 
-  // ── Nebula blobs ──
   const nebulas = [
     { x: 0.2, y: 0.2, r: 320, color: "88,101,242" },
     { x: 0.8, y: 0.7, r: 280, color: "150,60,200" },
@@ -99,17 +93,14 @@ function initSpace() {
     });
   }
 
-  // ── Draw loop ──
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // deep space bg
     ctx.fillStyle = "#07070d";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     drawNebulas();
 
-    // stars
     stars.forEach(s => {
       s.alpha += s.dAlpha;
       if (s.alpha >= 1)    { s.alpha = 1;  s.dAlpha *= -1; }
@@ -123,7 +114,6 @@ function initSpace() {
       ctx.fill();
     });
 
-    // shooting stars
     for (let i = shooters.length - 1; i >= 0; i--) {
       const s = shooters[i];
       const dx = Math.cos(s.angle) * s.len;
@@ -163,8 +153,7 @@ function startCountryAnim() {
   const chars  = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
   function scramble() {
     let d = "";
-    for (let i = 0; i < length; i++)
-      d += chars[Math.floor(Math.random() * chars.length)];
+    for (let i = 0; i < length; i++) d += chars[Math.floor(Math.random() * chars.length)];
     el.textContent = d;
   }
   scramble();
@@ -180,8 +169,12 @@ function renderTech(id, items) {
     const pill = document.createElement("div");
     pill.className = "tech-pill";
     pill.title = item.name;
+
     const img = document.createElement("img");
-    img.src = item.icon; img.alt = item.name; img.loading = "lazy";
+    img.src = item.icon;
+    img.alt = item.name;
+    img.loading = "lazy";
+
     pill.appendChild(img);
     el.appendChild(pill);
   }
@@ -191,6 +184,7 @@ function renderTech(id, items) {
 function startLocalClock() {
   const el = document.getElementById("discordLocalTime");
   if (!el) return;
+
   function tick() {
     const utc8 = new Date(Date.now() + 8 * 3600000);
     const h = String(utc8.getUTCHours()).padStart(2, "0");
@@ -198,6 +192,7 @@ function startLocalClock() {
     const s = String(utc8.getUTCSeconds()).padStart(2, "0");
     el.textContent = `${h}:${m}:${s}`;
   }
+
   tick();
   setInterval(tick, 1000);
 }
@@ -206,36 +201,54 @@ function startLocalClock() {
 function pickActivityText(p) {
   if (p?.listening_to_spotify && p.spotify)
     return `🎵 <strong>${p.spotify.song}</strong> — ${p.spotify.artist}`;
+
   const acts = (p?.activities ?? []).filter(a => a.type !== 4);
   if (!acts.length) return null;
+
   const a = acts[0];
   const v = { 0:"Playing", 1:"Streaming", 2:"Listening to", 3:"Watching", 5:"Competing in" };
+
   let t = `${v[a.type] ?? "Doing"} <strong>${a.name}</strong>`;
   if (a.details) t += `<br><span class="act-details">${a.details}</span>`;
   if (a.state)   t += `<br><span class="act-state">${a.state}</span>`;
   return t;
 }
 
-/* ── Banner ── */
+/* ── Banner (uses Dustin API banner when present) ── */
 function applyBanner(profile, status) {
   const el = document.getElementById("discordBanner");
   if (!el) return;
-  const hash = profile?.banner;
-  if (hash) {
-    const ext = hash.startsWith("a_") ? "gif" : "png";
-    el.style.cssText = `background-image:url("https://cdn.discordapp.com/banners/${DISCORD_ID}/${hash}.${ext}?size=600");background-size:cover;background-position:center top;`;
+
+  // Dustin returns `banner` hash when you have a banner set.
+  const bannerHash = profile?.banner;
+
+  if (bannerHash) {
+    const ext = bannerHash.startsWith("a_") ? "gif" : "png";
+    el.style.cssText =
+      `background-image:url("https://cdn.discordapp.com/banners/${DISCORD_ID}/${bannerHash}.${ext}?size=600");` +
+      `background-size:cover;background-position:center top;`;
     return;
   }
+
+  // fallback: use accent/banner color from Dustin if available
   const raw = profile?.banner_color ?? profile?.accent_color;
-  const hex = raw ? (typeof raw === "number" ? "#" + raw.toString(16).padStart(6,"0") : raw) : null;
-  if (hex) { el.style.cssText = `background:linear-gradient(135deg,${hex}cc 0%,${hex}22 70%,#07070d 100%);`; return; }
+  const hex = raw
+    ? (typeof raw === "number" ? "#" + raw.toString(16).padStart(6, "0") : raw)
+    : null;
+
+  if (hex) {
+    el.style.cssText = `background:linear-gradient(135deg,${hex}cc 0%,${hex}22 70%,#07070d 100%);`;
+    return;
+  }
+
+  // fallback fallback: status gradient
   const sc = {
     online:  ["#23a55a","#1e7a42"],
     idle:    ["#f0b232","#b07d1a"],
     dnd:     ["#f23f43","#a82b2e"],
     offline: ["#1a1c2e","#07070d"],
   };
-  const [c1,c2] = sc[status] ?? sc.offline;
+  const [c1, c2] = sc[status] ?? sc.offline;
   el.style.cssText = `background:linear-gradient(135deg,${c1} 0%,${c2} 100%);`;
 }
 
@@ -243,27 +256,36 @@ function applyBanner(profile, status) {
 function applyDecoration(profile) {
   const el = document.getElementById("discordDecoration");
   if (!el) return;
+
   const asset = profile?.avatar_decoration_data?.asset;
   if (asset) {
     const ext = asset.startsWith("a_") ? "gif" : "png";
     el.src = `https://cdn.discordapp.com/avatar-decoration-presets/${asset}.${ext}?size=160&passthrough=true`;
     el.style.display = "block";
-    el.onerror = () => { el.src="assets/decoration.png"; el.onerror=()=>{el.style.display="none";}; };
+    el.onerror = () => {
+      el.src = "assets/decoration.png";
+      el.onerror = () => { el.style.display = "none"; };
+    };
     return;
   }
+
   el.src = "assets/decoration.png";
   el.style.display = "block";
-  el.onerror = () => { el.style.display="none"; };
+  el.onerror = () => { el.style.display = "none"; };
 }
 
 /* ── Profile effect ── */
 function applyProfileEffect(profile) {
   const el = document.getElementById("discordEffect");
   if (!el) return;
+
   const id = profile?.profile_effect?.id ?? profile?.profile_effect_config?.id;
-  if (!id) { el.style.display="none"; return; }
+  if (!id) { el.style.display = "none"; return; }
+
   el.src = `https://effects.discu.eu/effects/${id}/intro.webm`;
-  el.style.display="block"; el.load(); el.play().catch(()=>{});
+  el.style.display = "block";
+  el.load();
+  el.play().catch(() => {});
 }
 
 /* ── Discord UI ── */
@@ -272,11 +294,15 @@ function setDiscordUI(lanyard, profile) {
 
   const hash = isYou ? (profile?.avatar ?? MY_AVATAR) : MY_AVATAR;
   const ext  = hash.startsWith("a_") ? "gif" : "png";
+
   const avatarEl = document.getElementById("discordAvatar");
   if (avatarEl) avatarEl.src = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${hash}.${ext}?size=128`;
 
   const status = lanyard?.discord_status ?? "offline";
+
+  // ✅ this is where the Dustin banner is used
   applyBanner(profile, status);
+
   applyDecoration(profile);
   applyProfileEffect(profile);
 
@@ -292,22 +318,26 @@ function setDiscordUI(lanyard, profile) {
 
   const labels = { online:"online", idle:"idle", dnd:"do not disturb", offline:"offline" };
   const dot  = document.getElementById("discordStatusDot");
-  if (dot)  dot.className = `discord-status-dot ${status}`;
-  const stEl = document.getElementById("discordStatusText");
-  if (stEl) { stEl.className=`discord-status-label ${status}`; stEl.textContent=labels[status]??status; }
+  if (dot) dot.className = `discord-status-dot ${status}`;
 
-  const custom = (lanyard?.activities??[]).find(a=>a.type===4);
-  const cEl    = document.getElementById("discordCustomStatus");
+  const stEl = document.getElementById("discordStatusText");
+  if (stEl) {
+    stEl.className = `discord-status-label ${status}`;
+    stEl.textContent = labels[status] ?? status;
+  }
+
+  const custom = (lanyard?.activities ?? []).find(a => a.type === 4);
+  const cEl = document.getElementById("discordCustomStatus");
   if (cEl) {
     cEl.style.display = custom?.state ? "block" : "none";
-    if (custom?.state) cEl.textContent = `${custom.emoji?.name??""} ${custom.state}`.trim();
+    if (custom?.state) cEl.textContent = `${custom.emoji?.name ?? ""} ${custom.state}`.trim();
   }
 
   const actText = pickActivityText(lanyard);
-  const aWrap   = document.getElementById("discordActivityWrap");
-  const aEl     = document.getElementById("discordActivity");
+  const aWrap = document.getElementById("discordActivityWrap");
+  const aEl   = document.getElementById("discordActivity");
   if (aWrap) aWrap.style.display = actText ? "block" : "none";
-  if (aEl)   aEl.innerHTML = actText ?? "";
+  if (aEl) aEl.innerHTML = actText ?? "";
 }
 
 /* ── Fetch ── */
@@ -316,8 +346,10 @@ async function fetchAll() {
     fetch(LANYARD_API).then(r => r.json()),
     fetch(DUSTIN_API).then(r => r.json()),
   ]);
-  const lanyard = lr.status==="fulfilled" && lr.value?.success ? lr.value.data : null;
-  const profile = dr.status==="fulfilled" ? dr.value : null;
+
+  const lanyard = lr.status === "fulfilled" && lr.value?.success ? lr.value.data : null;
+  const profile = dr.status === "fulfilled" ? dr.value : null;
+
   setDiscordUI(lanyard, profile);
 }
 
