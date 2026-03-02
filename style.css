@@ -60,17 +60,6 @@ body {
   opacity: .55;
 }
 
-/* Reze — bottom right corner */
-.char-reze {
-  right: 0;
-  height: 58vh;
-  max-height: 520px;
-  object-fit: contain;
-  object-position: bottom right;
-  filter: drop-shadow(-6px 0 28px rgba(0,0,0,.85));
-  z-index: 1;
-}
-
 /* ── Layout ── */
 .layout {
   position: relative;
