@@ -356,3 +356,12 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
+
+.discord-banner{
+  height: 128px;           
+  width: 100%;
+  background: #111827;      
+  background-size: cover;
+  background-position: center;
+  border-radius: 14px 14px 0 0;
+}
