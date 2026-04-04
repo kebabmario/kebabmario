@@ -1,4 +1,4 @@
-# Hey im Kebabmario/Myrixx i like doing web development using HTML5, CSS3, and Javascript.
+# Hey im Kebabmario/Myrixx i like doing web development
 ![w](.github-assets/transrights.png) ![w](.github-assets/progress.png) ![w](.github-assets/internetarchive.gif) ![w](.github-assets//ieget-an.gif) ![w](.github-assets/minecraft.gif) ![w](.github-assets/powered-llvm.gif)
 ![w](.github-assets/opengl.gif) ![w](.github-assets/adobe_getflash2.gif) ![w](.github-assets/flash_get_20010813.gif) ![w](.github-assets/SiliconValley_7479_English_imagens_get_flashplayer.gif)
 
