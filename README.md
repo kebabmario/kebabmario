@@ -1,4 +1,4 @@
-# Hey im Kebabmario/Myrixx i like doing web development
+# Hello, im kebabmario or you can call me myrixx, im currently focused on web development using Next.js and React.
 ![w](./assets/IMG_5520.gif) ![w](./assets/IMG_5504.gif)  ![w](./assets/IMG_5505.gif) ![w](./assets/IMG_5506.gif) ![w](./assets/IMG_5507.gif) ![w](./assets/IMG_5508.gif) ![w](./assets/IMG_5509.gif) ![w](./assets/IMG_5510.gif) ![w](./assets/IMG_5512.gif) ![w](./assets/IMG_5513.gif) ![w](./assets/IMG_5514.gif) ![w](./assets/IMG_5515.gif) ![w](./assets/IMG_5516.gif) ![w](./assets/IMG_5503.gif) 
 
 ## Techstack
